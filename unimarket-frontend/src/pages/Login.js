@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export default function Login() {
-  const [data, setData] = useState({ email: '', password: '', role: 'buyer' });
+  const [data, setData] = useState({ username: '', password: '', role: 'buyer' });
   const navigate = useNavigate();
 
   const handleChange = e => setData({ ...data, [e.target.name]: e.target.value });
@@ -14,10 +14,10 @@ export default function Login() {
     try {
       const loginUrl = data.role === 'seller'
         ? 'http://localhost:5000/api/seller/login'
-        : 'http://localhost:5000/api/auth/login';
+        : 'http://localhost:5000/api/user/login';
 
       const res = await axios.post(loginUrl, {
-        email: data.email,
+        username: data.username,
         password: data.password
       });
 
@@ -26,7 +26,7 @@ export default function Login() {
       localStorage.setItem('username', res.data.username || '');
 
       toast.success('Logged in successfully!');
-      navigate('/dashboard'); // redirect after login
+      navigate('/dashboard');
     } catch (err) {
       console.error(err.response?.data || err.message);
       toast.error(err.response?.data?.message || 'Login failed');
@@ -37,17 +37,37 @@ export default function Login() {
     <div className="max-w-md mx-auto mt-10 bg-white shadow p-6 rounded-xl">
       <h2 className="text-xl font-semibold mb-4 text-[#003366]">Login</h2>
       <form onSubmit={handleSubmit} className="space-y-3">
-        <input type="email" name="email" value={data.email} onChange={handleChange}
-          placeholder="Email" required className="w-full border px-3 py-2 rounded" />
-        <input type="password" name="password" value={data.password} onChange={handleChange}
-          placeholder="Password" required className="w-full border px-3 py-2 rounded" />
-        <select name="role" value={data.role} onChange={handleChange}
-          className="w-full border px-3 py-2 rounded">
+        <input
+          type="text"
+          name="username"
+          value={data.username}
+          onChange={handleChange}
+          placeholder="Username"
+          required
+          className="w-full border px-3 py-2 rounded"
+        />
+        <input
+          type="password"
+          name="password"
+          value={data.password}
+          onChange={handleChange}
+          placeholder="Password"
+          required
+          className="w-full border px-3 py-2 rounded"
+        />
+        <select
+          name="role"
+          value={data.role}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+        >
           <option value="buyer">Login as Buyer</option>
           <option value="seller">Login as Seller</option>
         </select>
-        <button type="submit"
-          className="bg-gradient-to-r from-[#005EB8] to-[#003366] text-white px-3 py-2 rounded hover:opacity-90 w-full">
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-[#005EB8] to-[#003366] text-white px-3 py-2 rounded hover:opacity-90 w-full"
+        >
           Login
         </button>
       </form>
