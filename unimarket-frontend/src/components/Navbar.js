@@ -1,9 +1,28 @@
-// src/components/Navbar.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Navbar({ isLoggedIn, role, onLogout }) {
+export default function Navbar({ onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+  const [role, setRole] = useState(localStorage.getItem('role'));
+
+  useEffect(() => {
+    const handleStorage = () => {
+      setIsLoggedIn(!!localStorage.getItem('token'));
+      setRole(localStorage.getItem('role'));
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
+    setIsLoggedIn(false);
+    setRole(null);
+    if (onLogout) onLogout();
+  };
 
   return (
     <nav className="sticky top-0 bg-gradient-to-r from-[#003366] to-[#005EB8] text-white shadow z-50">
@@ -12,7 +31,6 @@ export default function Navbar({ isLoggedIn, role, onLogout }) {
           <img src="/logo.jpg" alt="Logo" className="h-8 w-auto mr-2 rounded" />
           <span className="font-bold text-lg">UniMarket</span>
         </div>
-
         <div className="hidden md:flex space-x-3 items-center text-sm">
           <Link to="/">Home</Link>
           <Link to="/products">Products</Link>
@@ -42,17 +60,11 @@ export default function Navbar({ isLoggedIn, role, onLogout }) {
             </>
           )}
           {isLoggedIn && (
-            <button onClick={onLogout} className="bg-pink-500 px-2 py-1 rounded hover:bg-pink-600">Logout</button>
+            <button onClick={handleLogout} className="bg-pink-500 px-2 py-1 rounded hover:bg-pink-600">Logout</button>
           )}
         </div>
-
-        {/* Mobile menu icon */}
-        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-xl">
-          ☰
-        </button>
+        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-xl">☰</button>
       </div>
-
-      {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden flex flex-col px-4 pb-3 space-y-2 bg-gradient-to-r from-[#003366] to-[#005EB8] text-sm">
           <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
@@ -83,9 +95,7 @@ export default function Navbar({ isLoggedIn, role, onLogout }) {
             </>
           )}
           {isLoggedIn && (
-            <button onClick={() => { onLogout(); setMenuOpen(false); }} className="bg-pink-500 px-2 py-1 rounded hover:bg-pink-600">
-              Logout
-            </button>
+            <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="bg-pink-500 px-2 py-1 rounded hover:bg-pink-600">Logout</button>
           )}
         </div>
       )}

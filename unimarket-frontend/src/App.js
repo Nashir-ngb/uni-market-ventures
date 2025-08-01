@@ -25,13 +25,14 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [role, setRole] = useState(localStorage.getItem('role'));
 
+  // keep state synced if storage changes
   useEffect(() => {
-    const handleStorage = () => {
+    const syncAuth = () => {
       setIsLoggedIn(!!localStorage.getItem('token'));
       setRole(localStorage.getItem('role'));
     };
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
+    window.addEventListener('storage', syncAuth);
+    return () => window.removeEventListener('storage', syncAuth);
   }, []);
 
   const handleLogout = () => {
@@ -59,10 +60,9 @@ export default function App() {
         <Route path="/seller" element={<Seller />} />
         <Route path="/seller/orders" element={<SellerOrders />} />
         <Route path="/seller/products" element={<SellerProducts />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login onLoginSuccess={() => setIsLoggedIn(true)} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        {/* add more if needed */}
       </Routes>
       <ToastContainer position="top-center" />
     </Router>
