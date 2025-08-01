@@ -3,21 +3,23 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-export default function Login() {
-  const [data, setData] = useState({ username: '', password: '', role: 'buyer' });
+export default function Login({ onLoginSuccess }) {
+  const [data, setData] = useState({ email: '', password: '', role: 'buyer' });
   const navigate = useNavigate();
 
-  const handleChange = e => setData({ ...data, [e.target.name]: e.target.value });
+  const handleChange = e =>
+    setData({ ...data, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const loginUrl = data.role === 'seller'
-        ? 'http://localhost:5000/api/seller/login'
-        : 'http://localhost:5000/api/user/login';
+      const loginUrl =
+        data.role === 'seller'
+          ? 'http://localhost:5000/api/seller/login'
+          : 'http://localhost:5000/api/auth/login';
 
       const res = await axios.post(loginUrl, {
-        username: data.username,
+        email: data.email,
         password: data.password
       });
 
@@ -26,6 +28,7 @@ export default function Login() {
       localStorage.setItem('username', res.data.username || '');
 
       toast.success('Logged in successfully!');
+      if (onLoginSuccess) onLoginSuccess();
       navigate('/dashboard');
     } catch (err) {
       console.error(err.response?.data || err.message);
@@ -38,11 +41,11 @@ export default function Login() {
       <h2 className="text-xl font-semibold mb-4 text-[#003366]">Login</h2>
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
-          type="text"
-          name="username"
-          value={data.username}
+          type="email"
+          name="email"
+          value={data.email}
           onChange={handleChange}
-          placeholder="Username"
+          placeholder="Email"
           required
           className="w-full border px-3 py-2 rounded"
         />

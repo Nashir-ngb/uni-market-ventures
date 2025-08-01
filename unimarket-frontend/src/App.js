@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -25,7 +24,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [role, setRole] = useState(localStorage.getItem('role'));
 
-  // keep state synced if storage changes
+  // Keep state in sync if storage changes (e.g. user logs in/out in another tab)
   useEffect(() => {
     const syncAuth = () => {
       setIsLoggedIn(!!localStorage.getItem('token'));
@@ -60,7 +59,13 @@ export default function App() {
         <Route path="/seller" element={<Seller />} />
         <Route path="/seller/orders" element={<SellerOrders />} />
         <Route path="/seller/products" element={<SellerProducts />} />
-        <Route path="/login" element={<Login onLoginSuccess={() => setIsLoggedIn(true)} />} />
+
+        {/* pass login success handler */}
+        <Route path="/login" element={<Login onLoginSuccess={() => {
+          setIsLoggedIn(true);
+          setRole(localStorage.getItem('role'));
+        }} />} />
+        
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
