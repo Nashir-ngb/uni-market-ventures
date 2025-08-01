@@ -1,0 +1,44 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+export default function Register() {
+  const [data, setData] = useState({ username: '', email: '', password: '', role: 'buyer' });
+  const navigate = useNavigate();
+
+  const handleChange = e => setData({ ...data, [e.target.name]: e.target.value });
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:5000/api/user/register', data);
+      toast.success('Registered! Please login');
+      navigate('/login');
+    } catch {
+      toast.error('Registration failed');
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto mt-10 bg-white shadow p-6 rounded-xl">
+      <h2 className="text-xl font-semibold mb-4 text-[#003366]">Register</h2>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <input type="text" name="username" value={data.username} onChange={handleChange}
+          placeholder="Username" required className="w-full border px-3 py-2 rounded" />
+        <input type="email" name="email" value={data.email} onChange={handleChange}
+          placeholder="Email" required className="w-full border px-3 py-2 rounded" />
+        <input type="password" name="password" value={data.password} onChange={handleChange}
+          placeholder="Password" required className="w-full border px-3 py-2 rounded" />
+        <select name="role" value={data.role} onChange={handleChange} className="w-full border px-3 py-2 rounded">
+          <option value="buyer">Buyer</option>
+          <option value="seller">Seller</option>
+        </select>
+        <button type="submit"
+          className="bg-gradient-to-r from-[#005EB8] to-[#003366] text-white px-3 py-2 rounded hover:opacity-90 w-full">
+          Register
+        </button>
+      </form>
+    </div>
+  );
+}
