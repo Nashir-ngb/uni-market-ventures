@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export default function Login({ onLoginSuccess }) {
-  const [data, setData] = useState({ email: '', password: '', role: 'buyer' });
+  const [data, setData] = useState({ username: '', password: '', role: 'buyer' });
   const navigate = useNavigate();
 
   const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
@@ -22,11 +22,10 @@ export default function Login({ onLoginSuccess }) {
       const loginUrl = `${API_BASE}${route}`;
 
       const payload = data.role === 'seller'
-  ? { email: data.email, password: data.password }
-  : { username: data.email, password: data.password };
+        ? { email: data.username, password: data.password }
+        : { username: data.username, password: data.password };
 
       const res = await axios.post(loginUrl, payload);
-
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role', data.role);
@@ -46,11 +45,11 @@ export default function Login({ onLoginSuccess }) {
       <h2 className="text-xl font-semibold mb-4 text-[#003366]">Login</h2>
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
-          type="email"
-          name="email"
-          value={data.email}
+          type="text"
+          name="username"
+          value={data.username}
           onChange={handleChange}
-          placeholder="Email"
+          placeholder={data.role === 'seller' ? "Email" : "Username"}
           required
           className="w-full border px-3 py-2 rounded"
         />

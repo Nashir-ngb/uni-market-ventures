@@ -13,11 +13,8 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
-  const API_BASE = process.env.REACT_APP_API_BASE_URL || '';
 
-  if (!API_BASE) {
-    console.warn('⚠️ REACT_APP_API_BASE_URL is not set!');
-  }
+  const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
 
   const handleChange = (e) => {
     setData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -28,13 +25,17 @@ export default function Register() {
     setIsSubmitting(true);
 
     try {
-      const route = data.role === 'seller' 
-  ? '/api/seller/register' 
-  : '/api/user/register';
+      const route = data.role === 'seller'
+        ? '/api/seller/register'
+        : '/api/user/register';
 
-const url = `${API_BASE.replace(/\/$/, '')}${route}`;
-const response = await axios.post(url, data);
+      const registerUrl = `${API_BASE}${route}`;
 
+      const payload = data.role === 'seller'
+        ? { email: data.email, password: data.password }
+        : { username: data.username, password: data.password };
+
+      const response = await axios.post(registerUrl, payload);
 
       toast.success(response.data.message || 'Registered successfully!');
       navigate('/login');
@@ -60,15 +61,17 @@ const response = await axios.post(url, data);
           <option value="buyer">Register as Buyer</option>
           <option value="seller">Register as Seller</option>
         </select>
-        <input
-          type="text"
-          name="username"
-          value={data.username}
-          onChange={handleChange}
-          placeholder="Username"
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
+        {data.role === 'buyer' && (
+          <input
+            type="text"
+            name="username"
+            value={data.username}
+            onChange={handleChange}
+            placeholder="Username"
+            required
+            className="w-full border px-3 py-2 rounded"
+          />
+        )}
         <input
           type="email"
           name="email"
