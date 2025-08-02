@@ -23,7 +23,7 @@ export default function Footer() {
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
               <FaFacebookF className="hover:text-[#FFB6C1]" />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/unimarket.ventures?igsh=dDFpNTFza2N0N2p0" target="_blank" rel="noopener noreferrer">
               <FaInstagram className="hover:text-[#FFB6C1]" />
             </a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
