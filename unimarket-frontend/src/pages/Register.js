@@ -29,10 +29,12 @@ export default function Register() {
 
     try {
       const route = data.role === 'seller' 
-        ? '/api/seller/register' 
-        : '/api/user/register';
+  ? '/api/seller/register' 
+  : '/api/user/register';
 
-      const response = await axios.post(`${API_BASE}${route}`, data);
+const url = `${API_BASE.replace(/\/$/, '')}${route}`;
+const response = await axios.post(url, data);
+
 
       toast.success(response.data.message || 'Registered successfully!');
       navigate('/login');
