@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 const businesses = [
   'D-Kampung Coffee', 'AIU Tailoring Shop', 'Maximus Fashion Wear', 'Bundle Fashions', 'Nasi Kandar SMA Amin', 
@@ -14,6 +13,7 @@ const businesses = [
 export default function Home() {
   const [selected, setSelected] = useState(null);
 
+  // Function to handle booking with seller (requires selected business)
   const handleAppointmentBooking = async (business, type) => {
     const appointment = {
       name: 'John Doe', // replace with actual user input later
@@ -28,6 +28,16 @@ export default function Home() {
     } catch (error) {
       console.error("Error booking appointment:", error);
     }
+  };
+
+  // Function to prompt writing an email to counsellor
+  const emailCounsellor = () => {
+    const counsellorEmail = "fazlia.azhari@aiu.edu.my";
+    const subject = encodeURIComponent("Appointment Request with Counsellor");
+    const body = encodeURIComponent(
+      `Dear Counsellor,\n\nI would like to request an appointment.\n\nThank you.`
+    );
+    window.location.href = `mailto:${counsellorEmail}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -52,17 +62,16 @@ export default function Home() {
         className="mx-4 mb-8 rounded-xl overflow-hidden shadow-xl"
       >
         <video 
-  className="w-full h-auto"
-  autoPlay 
-  loop 
-  muted 
-  playsInline
->
-  <source src={"/unimarket-promo.mp4"} type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
-</motion.div>
-
+          className="w-full h-auto"
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+        >
+          <source src={"unimarket-promo.mp4"} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </motion.div>
 
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8"
@@ -70,9 +79,7 @@ export default function Home() {
         animate="show"
         variants={{
           hidden: {},
-          show: {
-            transition: { staggerChildren: 0.1 }
-          }
+          show: { transition: { staggerChildren: 0.1 } }
         }}
       >
         {businesses.map((biz) => (
@@ -102,21 +109,11 @@ export default function Home() {
           Book with Seller
         </button>
         <button
-          onClick={() => handleAppointmentBooking(selected, "counsellor")}
-          className="bg-[#FFB6C1] text-[#003366] px-4 py-2 rounded shadow hover:bg-pink-300 disabled:opacity-50"
-          disabled={!selected}
+          onClick={emailCounsellor}
+          className="bg-[#FFB6C1] text-[#003366] px-4 py-2 rounded shadow hover:bg-pink-300"
         >
-          Book with Counsellor
+          Email Counsellor
         </button>
-      </div>
-
-      <div className="flex justify-center mb-8">
-        <Link 
-          to="/seller"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          📦 Go to Seller Dashboard
-        </Link>
       </div>
     </div>
   );
