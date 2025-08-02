@@ -55,7 +55,7 @@ export default function Home() {
           muted 
           playsInline
         >
-          <source src="https://drive.google.com/file/d/1BlZ7ij0TXCVbYajCugGecDZmf6vC0zkw/view?usp=drive_link" type="video/mp4" />
+          <source src="https://drive.google.com/uc?export=preview&id=1BlZ7ij0TXCVbYajCugGecDZmf6vC0zkw" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </motion.div>
