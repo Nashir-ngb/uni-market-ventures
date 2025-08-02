@@ -9,13 +9,13 @@ export default function Footer() {
         
         <div className="flex flex-col items-center md:items-start space-y-1">
           <p className="font-semibold text-lg">UniMarket Hub</p>
-          <p className="text-sm">Empowering campus commerce & community.</p>
+          <p className="text-sm">Empowering campus commerce & mental heaalth</p>
         </div>
 
         <div className="flex justify-center space-x-4 text-sm font-medium">
-          <Link to="/about" className="hover:text-[#FFB6C1]">About Us</Link>
-          <Link to="/products" className="hover:text-[#FFB6C1]">Products</Link>
-          <Link to="/chat" className="hover:text-[#FFB6C1]">Chat</Link>
+          <Link to="/about" className="hover:text-[#FFB6C1]">🧑‍🤝‍🧑About Us</Link>
+          <Link to="/products" className="hover:text-[#FFB6C1]">🏷️Products</Link>
+          <Link to="/chat" className="hover:text-[#FFB6C1]">📨Chat</Link>
         </div>
 
         <div className="flex flex-col items-center md:items-end space-y-1 text-sm">
