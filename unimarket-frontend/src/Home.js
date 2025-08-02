@@ -100,7 +100,7 @@ export default function Home() {
         ))}
       </motion.div>
 
-      <div className="flex flex-col md:flex-row justify-center gap-4 mb-8 px-4">
+      <div className="flex flex-col md:flex-row justify-center gap-4 mb-0 px-4">
         <button
           onClick={() => handleAppointmentBooking(selected, "seller")}
           className="bg-[#005EB8] text-white px-4 py-2 rounded shadow hover:bg-[#003366] disabled:opacity-50"
