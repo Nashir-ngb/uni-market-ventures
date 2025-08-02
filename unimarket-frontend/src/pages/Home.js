@@ -42,19 +42,23 @@ export default function Home() {
 
       <p className="text-center text-lg mb-6 text-[#002F6C]">Explore, connect and trade with the campus community!</p>
 
-    <motion.div
-  initial={{ opacity: 0, y: 30 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 1 }}
-  className="mx-4 mb-8 rounded-xl overflow-hidden shadow-xl"
->
-  <iframe
-    src="https://drive.google.com/file/d/1BlZ7ij0TXCVbYajCugGecDZmf6vC0zkw/preview"
-    title="UniMarket Promo Video"
-    allow="autoplay"
-    className="w-full h-[300px] md:h-[500px] rounded-xl"
-  ></iframe>
-</motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        className="mx-4 mb-8 rounded-xl overflow-hidden shadow-xl"
+      >
+        <video 
+          className="w-full h-auto"
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+        >
+          <source src="/unimarket-promo.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </motion.div>
 
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8"
