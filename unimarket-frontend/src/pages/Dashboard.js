@@ -21,7 +21,7 @@ export default function Dashboard() {
     <div className="p-4">
       <h1 className="text-xl font-semibold mb-4">Dashboard Stats</h1>
       <p>Total orders: {stats.totalOrders || 0}</p>
-      <p>Total spent: ${stats.totalSpent || 0}</p>
+      <p>Total spent: RM{stats.totalSpent || 0}</p>
       <p>Upcoming appointments: {stats.upcomingAppointments || 0}</p>
     </div>
   );
