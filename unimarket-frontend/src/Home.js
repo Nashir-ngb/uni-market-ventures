@@ -52,16 +52,17 @@ export default function Home() {
         className="mx-4 mb-8 rounded-xl overflow-hidden shadow-xl"
       >
         <video 
-          className="w-full h-auto"
-          autoPlay 
-          loop 
-          muted 
-          playsInline
-        >
-          <source src="/unimarket-promo.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </motion.div>
+  className="w-full h-auto"
+  autoPlay 
+  loop 
+  muted 
+  playsInline
+>
+  <source src={"https://drive.google.com/uc?export=download&id=1BlZ7ij0TXCVbYajCugGecDZmf6vC0zkw"} type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+</motion.div>
+
 
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8"

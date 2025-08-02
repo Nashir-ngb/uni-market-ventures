@@ -12,7 +12,7 @@ export default function Register() {
   });
 
   const navigate = useNavigate();
-  const API_BASE = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
   const handleChange = e =>
     setData({ ...data, [e.target.name]: e.target.value });
