@@ -7,16 +7,19 @@ export default function Login({ onLoginSuccess }) {
   const [data, setData] = useState({ email: '', password: '', role: 'buyer' });
   const navigate = useNavigate();
 
+  const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
+
   const handleChange = e =>
     setData({ ...data, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const loginUrl =
-        data.role === 'seller'
-          ? 'http://localhost:5000/api/seller/login'
-          : 'http://localhost:5000/api/auth/login';
+      const route = data.role === 'seller'
+        ? '/api/seller/login'
+        : '/api/auth/login';
+
+      const loginUrl = `${API_BASE}${route}`;
 
       const res = await axios.post(loginUrl, {
         email: data.email,
