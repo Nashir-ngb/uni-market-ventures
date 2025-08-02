@@ -48,16 +48,13 @@ export default function Home() {
   transition={{ duration: 1 }}
   className="mx-4 mb-8 rounded-xl overflow-hidden shadow-xl"
 >
-  <iframe 
+  <iframe
     src="https://drive.google.com/file/d/1BlZ7ij0TXCVbYajCugGecDZmf6vC0zkw/preview"
-    title="UniMarket promo video"
-    width="100%" 
-    height="315"
+    title="UniMarket Promo Video"
     allow="autoplay"
-    className="w-full rounded-xl"
+    className="w-full h-[300px] md:h-[500px] rounded-xl"
   ></iframe>
-  </motion.div>
-
+</motion.div>
 
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8"
