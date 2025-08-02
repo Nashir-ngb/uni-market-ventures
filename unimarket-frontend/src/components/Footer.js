@@ -9,7 +9,7 @@ export default function Footer() {
         
         <div className="flex flex-col items-center md:items-start space-y-1">
           <p className="font-semibold text-lg">UniMarket Hub</p>
-          <p className="text-sm">Empowering campus commerce & mental heaalth</p>
+          <p className="text-sm">Empowering campus commerce & mental health</p>
         </div>
 
         <div className="flex justify-center space-x-4 text-sm font-medium">
