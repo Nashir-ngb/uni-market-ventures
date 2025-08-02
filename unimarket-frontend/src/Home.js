@@ -58,7 +58,7 @@ export default function Home() {
   muted 
   playsInline
 >
-  <source src={"https://drive.google.com/uc?export=download&id=1BlZ7ij0TXCVbYajCugGecDZmf6vC0zkw"} type="video/mp4" />
+  <source src={"/unimarket-promo.mp4"} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 </motion.div>
