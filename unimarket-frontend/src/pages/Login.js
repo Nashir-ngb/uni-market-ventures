@@ -17,7 +17,7 @@ export default function Login({ onLoginSuccess }) {
     try {
       const route = data.role === 'seller'
         ? '/api/seller/login'
-        : '/api/auth/login';
+        : '/api/user/login';
 
       const loginUrl = `${API_BASE}${route}`;
 
