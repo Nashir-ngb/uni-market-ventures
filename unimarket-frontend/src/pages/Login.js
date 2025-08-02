@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../context/AuthContext';
 
-export default function Login({ onLoginSuccess }) {
+export default function Login() {
   const [data, setData] = useState({ username: '', password: '', role: 'buyer' });
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
 
   const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
 
@@ -27,12 +29,15 @@ export default function Login({ onLoginSuccess }) {
 
       const res = await axios.post(loginUrl, payload);
 
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('role', data.role);
-      localStorage.setItem('username', res.data.username || '');
+      localStorage.setItem('token', res.data.token);  // keep token for backend calls
+
+      setUser({
+        isLoggedIn: true,
+        role: data.role,
+        username: res.data.username || '',
+      });
 
       toast.success('Logged in successfully!');
-      if (onLoginSuccess) onLoginSuccess();
       navigate('/dashboard');
     } catch (err) {
       console.error(err.response?.data || err.message);
