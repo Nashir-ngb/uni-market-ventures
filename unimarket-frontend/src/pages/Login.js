@@ -21,10 +21,12 @@ export default function Login({ onLoginSuccess }) {
 
       const loginUrl = `${API_BASE}${route}`;
 
-      const res = await axios.post(loginUrl, {
-        email: data.email,
-        password: data.password
-      });
+      const payload = data.role === 'seller'
+  ? { email: data.email, password: data.password }
+  : { username: data.email, password: data.password };
+
+      const res = await axios.post(loginUrl, payload);
+
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role', data.role);
