@@ -31,9 +31,12 @@ export default function Register() {
 
       const registerUrl = `${API_BASE}${route}`;
 
-      const payload = data.role === 'seller'
-        ? { email: data.email, password: data.password }
-        : { username: data.username, password: data.password };
+      // ✅ Always send username, email and password
+      const payload = {
+        username: data.username,
+        email: data.email,
+        password: data.password
+      };
 
       const response = await axios.post(registerUrl, payload);
 
@@ -61,17 +64,15 @@ export default function Register() {
           <option value="buyer">Register as Buyer</option>
           <option value="seller">Register as Seller</option>
         </select>
-        {data.role === 'buyer' && (
-          <input
-            type="text"
-            name="username"
-            value={data.username}
-            onChange={handleChange}
-            placeholder="Username"
-            required
-            className="w-full border px-3 py-2 rounded"
-          />
-        )}
+        <input
+          type="text"
+          name="username"
+          value={data.username}
+          onChange={handleChange}
+          placeholder="Username"
+          required
+          className="w-full border px-3 py-2 rounded"
+        />
         <input
           type="email"
           name="email"
