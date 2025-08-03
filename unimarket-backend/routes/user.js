@@ -30,22 +30,26 @@ const authMiddleware = (req, res, next) => {
 // ✅ Register
 router.post('/register', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
+    if (!username || !password || !email) {
+      return res.status(400).json({ message: 'Username, email and password are required' });
+    }
+
     const existing = await User.findOne({ username });
     if (existing) return res.status(400).json({ message: 'User already exists' });
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ username, password: hashed });
+    const user = new User({ username, password: hashed, email });
     await user.save();
 
     res.json({ message: 'User registered successfully' });
   } catch (err) {
-    console.error(err);
+    console.error('Register error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// ✅ Login (added this!)
+// ✅ Login
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -63,15 +67,20 @@ router.post('/login', async (req, res) => {
 
     res.json({ token, role: 'buyer', username: user.username });
   } catch (err) {
-    console.error(err);
+    console.error('Login error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
 // ✅ Dashboard info
 router.get('/dashboard', authMiddleware, async (req, res) => {
-  const user = await User.findById(req.userId).select('-password');
-  res.json(user);
+  try {
+    const user = await User.findById(req.userId).select('-password');
+    res.json(user);
+  } catch (err) {
+    console.error('Dashboard error:', err);
+    res.status(500).json({ message: 'Failed to load dashboard' });
+  }
 });
 
 // ✅ Products
@@ -80,25 +89,26 @@ router.get('/products', async (req, res) => {
     const products = await Product.find();
     res.json(products);
   } catch (err) {
-    console.error(err);
+    console.error('Products error:', err);
     res.status(500).json({ message: 'Failed to load products' });
   }
 });
-
-// ... keep all your other routes like appointments, cart, orders, notifications, profile etc.
 
 // 📊 Buyer dashboard stats
 router.get('/dashboard/stats', authMiddleware, async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.userId });
-    const upcomingAppointments = await Appointment.find({ userId: req.userId, date: { $gte: new Date() } });
+    const upcomingAppointments = await Appointment.find({
+      userId: req.userId,
+      date: { $gte: new Date() }
+    });
     res.json({
       totalOrders: orders.length,
       totalSpent: orders.reduce((sum, o) => sum + o.total, 0),
       upcomingAppointments: upcomingAppointments.length
     });
   } catch (err) {
-    console.error(err);
+    console.error('Stats error:', err);
     res.status(500).json({ message: 'Failed to load stats' });
   }
 });
