@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -19,57 +19,41 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from './context/AuthContext';
+import About from './pages/About';
+import Footer from './components/Footer';
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
-  const [role, setRole] = useState(localStorage.getItem('role'));
-
-  // Keep state in sync if storage changes (e.g. user logs in/out in another tab)
-  useEffect(() => {
-    const syncAuth = () => {
-      setIsLoggedIn(!!localStorage.getItem('token'));
-      setRole(localStorage.getItem('role'));
-    };
-    window.addEventListener('storage', syncAuth);
-    return () => window.removeEventListener('storage', syncAuth);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('username');
-    setIsLoggedIn(false);
-    setRole(null);
-  };
-
   return (
-    <Router>
-      <Navbar isLoggedIn={isLoggedIn} role={role} onLogout={handleLogout} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/appointments" element={<Appointments />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/add-product" element={<AddProduct />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/seller" element={<Seller />} />
-        <Route path="/seller/orders" element={<SellerOrders />} />
-        <Route path="/seller/products" element={<SellerProducts />} />
-
-        {/* pass login success handler */}
-        <Route path="/login" element={<Login onLoginSuccess={() => {
-          setIsLoggedIn(true);
-          setRole(localStorage.getItem('role'));
-        }} />} />
-        
-        <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-      <ToastContainer position="top-center" />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/appointments" element={<Appointments />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/seller" element={<Seller />} />
+          <Route path="/seller/orders" element={<SellerOrders />} />
+          <Route path="/seller/products" element={<SellerProducts />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+        </main>
+        <ToastContainer position="top-center" />
+        <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }

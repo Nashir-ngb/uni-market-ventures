@@ -8,31 +8,42 @@ export default function Register() {
     username: '',
     email: '',
     password: '',
-    role: 'buyer', // default role
+    role: 'buyer',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
-  const API_BASE = process.env.REACT_APP_API_BASE_URL;
-  console.log('API_BASE:', API_BASE);
 
+  const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
 
-  const handleChange = e =>
-    setData({ ...data, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      // Choose the correct route based on role
-      const route =
-        data.role === 'seller' ? '/api/seller/register' : '/api/user/register';
+      const route = data.role === 'seller'
+        ? '/api/seller/register'
+        : '/api/user/register';
 
-      const res = await axios.post(`${API_BASE}${route}`, data);
+      const registerUrl = `${API_BASE}${route}`;
 
-      toast.success(res.data.message || 'Registered successfully!');
+      const payload = data.role === 'seller'
+        ? { email: data.email, password: data.password }
+        : { username: data.username, password: data.password };
+
+      const response = await axios.post(registerUrl, payload);
+
+      toast.success(response.data.message || 'Registered successfully!');
       navigate('/login');
     } catch (err) {
       console.error(err.response?.data || err.message);
       toast.error(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -44,20 +55,23 @@ export default function Register() {
           name="role"
           value={data.role}
           onChange={handleChange}
+          required
           className="w-full border px-3 py-2 rounded text-gray-700"
         >
           <option value="buyer">Register as Buyer</option>
           <option value="seller">Register as Seller</option>
         </select>
-        <input
-          type="text"
-          name="username"
-          value={data.username}
-          onChange={handleChange}
-          placeholder="Username"
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
+        {data.role === 'buyer' && (
+          <input
+            type="text"
+            name="username"
+            value={data.username}
+            onChange={handleChange}
+            placeholder="Username"
+            required
+            className="w-full border px-3 py-2 rounded"
+          />
+        )}
         <input
           type="email"
           name="email"
@@ -78,9 +92,12 @@ export default function Register() {
         />
         <button
           type="submit"
-          className="bg-gradient-to-r from-[#005EB8] to-[#003366] text-white px-3 py-2 rounded hover:opacity-90 w-full"
+          disabled={isSubmitting}
+          className={`bg-gradient-to-r from-[#005EB8] to-[#003366] text-white px-3 py-2 rounded hover:opacity-90 w-full ${
+            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
-          Register
+          {isSubmitting ? 'Registering...' : 'Register'}
         </button>
       </form>
     </div>

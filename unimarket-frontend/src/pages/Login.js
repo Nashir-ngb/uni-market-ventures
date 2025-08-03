@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../context/AuthContext';
 
-export default function Login({ onLoginSuccess }) {
-  const [data, setData] = useState({ email: '', password: '', role: 'buyer' });
+export default function Login() {
+  const [data, setData] = useState({ username: '', password: '', role: 'buyer' });
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
+
+  const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
 
   const handleChange = e =>
     setData({ ...data, [e.target.name]: e.target.value });
@@ -13,23 +17,29 @@ export default function Login({ onLoginSuccess }) {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const loginUrl =
-        data.role === 'seller'
-          ? 'http://localhost:5000/api/seller/login'
-          : 'http://localhost:5000/api/auth/login';
+      const route = data.role === 'seller'
+        ? '/api/seller/login'
+        : '/api/user/login';
 
-      const res = await axios.post(loginUrl, {
-        email: data.email,
-        password: data.password
+      const loginUrl = `${API_BASE}${route}`;
+
+      const payload = data.role === 'seller'
+        ? { email: data.username, password: data.password }
+        : { username: data.username, password: data.password };
+
+      const res = await axios.post(loginUrl, payload);
+
+      localStorage.setItem('token', res.data.token);  // keep token for backend calls
+
+      setUser({
+        isLoggedIn: true,
+        role: data.role,
+        username: res.data.username || '',
       });
 
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('role', data.role);
-      localStorage.setItem('username', res.data.username || '');
-
       toast.success('Logged in successfully!');
-      if (onLoginSuccess) onLoginSuccess();
       navigate('/dashboard');
+      window.location.reload();
     } catch (err) {
       console.error(err.response?.data || err.message);
       toast.error(err.response?.data?.message || 'Login failed');
@@ -41,11 +51,11 @@ export default function Login({ onLoginSuccess }) {
       <h2 className="text-xl font-semibold mb-4 text-[#003366]">Login</h2>
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
-          type="email"
-          name="email"
-          value={data.email}
+          type="text"
+          name="username"
+          value={data.username}
           onChange={handleChange}
-          placeholder="Email"
+          placeholder={data.role === 'seller' ? "Email" : "Username"}
           required
           className="w-full border px-3 py-2 rounded"
         />

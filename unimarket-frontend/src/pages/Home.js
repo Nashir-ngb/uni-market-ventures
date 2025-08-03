@@ -13,12 +13,13 @@ const businesses = [
 export default function Home() {
   const [selected, setSelected] = useState(null);
 
-  const handleAppointmentBooking = async (business, type) => {
+  // Handles booking an appointment with seller
+  const handleSellerBooking = async () => {
     const appointment = {
-      name: 'John Doe', // replace with actual user input later
-      date: '2025-07-29', // replace with actual date later
-      business,
-      type
+      name: 'John Doe', // replace with actual user input
+      date: '2025-07-29', // replace with actual date
+      business: selected,
+      type: 'seller'
     };
 
     try {
@@ -26,7 +27,18 @@ export default function Home() {
       alert(response.data.message);
     } catch (error) {
       console.error("Error booking appointment:", error);
+      alert("Failed to book appointment. Please try again.");
     }
+  };
+
+  // Opens default mail client to email the counsellor
+  const emailCounsellor = () => {
+    const counsellorEmail = "fazlia.azhari@aiu.edu.my";
+    const subject = encodeURIComponent("Appointment Request with Counsellor");
+    const body = encodeURIComponent(
+      "Dear Counsellor,\n\nI would like to request an appointment.\n\nThank you."
+    );
+    window.location.href = `mailto:${counsellorEmail}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -40,7 +52,9 @@ export default function Home() {
         Welcome to UniMarket Ventures
       </motion.h1>
 
-      <p className="text-center text-lg mb-6 text-[#002F6C]">Explore, connect and trade with the campus community!</p>
+      <p className="text-center text-lg mb-6 text-[#002F6C]">
+        Explore, connect and trade with the campus community!
+      </p>
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -55,7 +69,7 @@ export default function Home() {
           muted 
           playsInline
         >
-          <source src="/unimarket-promo.mp4" type="video/mp4" />
+          <source src="unimarket-promo.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </motion.div>
@@ -66,9 +80,7 @@ export default function Home() {
         animate="show"
         variants={{
           hidden: {},
-          show: {
-            transition: { staggerChildren: 0.1 }
-          }
+          show: { transition: { staggerChildren: 0.1 } }
         }}
       >
         {businesses.map((biz) => (
@@ -78,7 +90,9 @@ export default function Home() {
             transition={{ type: "spring", stiffness: 300 }}
           >
             <div 
-              className={`cursor-pointer p-4 bg-white shadow-lg rounded-lg text-center ${selected === biz ? 'ring-4 ring-[#005EB8]' : ''}`}
+              className={`cursor-pointer p-4 bg-white shadow-lg rounded-lg text-center ${
+                selected === biz ? 'ring-4 ring-[#005EB8]' : ''
+              }`}
               onClick={() => setSelected(biz)}
             >
               <h3 className="text-lg font-semibold text-[#003366]">{biz}</h3>
@@ -87,20 +101,19 @@ export default function Home() {
         ))}
       </motion.div>
 
-      <div className="flex flex-col md:flex-row justify-center gap-4 mb-8 px-4">
+      <div className="flex flex-col md:flex-row justify-center gap-4 mb-0 px-4">
         <button
-          onClick={() => handleAppointmentBooking(selected, "seller")}
+          onClick={handleSellerBooking}
           className="bg-[#005EB8] text-white px-4 py-2 rounded shadow hover:bg-[#003366] disabled:opacity-50"
           disabled={!selected}
         >
           Book with Seller
         </button>
         <button
-          onClick={() => handleAppointmentBooking(selected, "counsellor")}
-          className="bg-[#FFB6C1] text-[#003366] px-4 py-2 rounded shadow hover:bg-pink-300 disabled:opacity-50"
-          disabled={!selected}
+          onClick={emailCounsellor}
+          className="bg-[#FFB6C1] text-[#003366] px-4 py-2 rounded shadow hover:bg-pink-300"
         >
-          Book with Counsellor
+          Email Counsellor
         </button>
       </div>
     </div>
