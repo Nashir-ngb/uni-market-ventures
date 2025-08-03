@@ -27,7 +27,9 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
+        <div className="flex flex-col min-h-screen">
         <Navbar />
+        <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
@@ -47,8 +49,10 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/about" element={<About />} />
         </Routes>
+        </main>
         <ToastContainer position="top-center" />
         <Footer />
+        </div>
       </Router>
     </AuthProvider>
   );
