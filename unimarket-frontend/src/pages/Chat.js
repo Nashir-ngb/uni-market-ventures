@@ -8,6 +8,8 @@ export default function Chat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
+  console.log('Sending message to backend:', messages);
+
   const sendMessage = async () => {
     if (!input.trim()) return;
 
