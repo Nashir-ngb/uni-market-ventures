@@ -20,7 +20,7 @@ export default function Footer() {
 
         <div className="flex flex-col items-center md:items-end space-y-1 text-sm">
           <div className="flex space-x-3">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.facebook.com/share/172vTWahJP/" target="_blank" rel="noopener noreferrer">
               <FaFacebookF className="hover:text-[#FFB6C1]" />
             </a>
             <a href="https://www.instagram.com/unimarket.ventures?igsh=dDFpNTFza2N0N2p0" target="_blank" rel="noopener noreferrer">
