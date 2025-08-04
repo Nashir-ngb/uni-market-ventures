@@ -6,12 +6,14 @@ const Seller = require('../models/Seller');
 const OpenAI = require('openai');
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+console.log('Using OpenAI key starts with:', process.env.OPENAI_API_KEY?.slice(0, 8));
+
 // ✅ AI chat route
 router.post('/ask', async (req, res) => {
   const { message } = req.body;
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: "You are a friendly assistant for UniMarket, which lists businesses inside the university and helps students book counsellor appointments." },
         { role: "user", content: message }
