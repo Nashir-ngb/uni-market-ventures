@@ -1,85 +1,63 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { AuthContext } from '../context/AuthContext';
 
 export default function Login() {
-  const [data, setData] = useState({ username: '', password: '', role: 'buyer' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { setUser } = useContext(AuthContext);
 
-  const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
-
-  const handleChange = e =>
-    setData({ ...data, [e.target.name]: e.target.value });
-
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
-      const route = data.role === 'seller'
-        ? '/api/seller/login'
-        : '/api/user/login';
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/auth/login`,
+        { email, password }
+      );
 
-      const loginUrl = `${API_BASE}${route}`;
+      const { token, role } = res.data;
 
-      const payload = data.role === 'seller'
-        ? { email: data.username, password: data.password }
-        : { username: data.username, password: data.password };
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
 
-      const res = await axios.post(loginUrl, payload);
+      if (role === 'seller') {
+        navigate('/seller-dashboard');
+      } else {
+        navigate('/buyer-dashboard');
+      }
 
-      localStorage.setItem('token', res.data.token);  // keep token for backend calls
-
-      setUser({
-        isLoggedIn: true,
-        role: data.role,
-        username: res.data.username || '',
-      });
-
-      toast.success('Logged in successfully!');
-      navigate('/dashboard');
-      window.location.reload();
     } catch (err) {
-      console.error(err.response?.data || err.message);
-      toast.error(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || 'Login failed');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white shadow p-6 rounded-xl">
-      <h2 className="text-xl font-semibold mb-4 text-[#003366]">Login</h2>
-      <form onSubmit={handleSubmit} className="space-y-3">
+    <div className="max-w-md mx-auto mt-10 p-6 border rounded">
+      <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+      <form onSubmit={handleSubmit}>
         <input
-          type="text"
-          name="username"
-          value={data.username}
-          onChange={handleChange}
-          placeholder={data.role === 'seller' ? "Email" : "Username"}
+          className="w-full mb-3 px-3 py-2 border rounded"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
           required
-          className="w-full border px-3 py-2 rounded"
         />
         <input
+          className="w-full mb-4 px-3 py-2 border rounded"
           type="password"
-          name="password"
-          value={data.password}
-          onChange={handleChange}
           placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
           required
-          className="w-full border px-3 py-2 rounded"
         />
-        <select
-          name="role"
-          value={data.role}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        >
-          <option value="buyer">Login as Buyer</option>
-          <option value="seller">Login as Seller</option>
-        </select>
         <button
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
           type="submit"
-          className="bg-gradient-to-r from-[#005EB8] to-[#003366] text-white px-3 py-2 rounded hover:opacity-90 w-full"
         >
           Login
         </button>
