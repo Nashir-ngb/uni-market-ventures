@@ -13,6 +13,7 @@ export default function Navbar() {
     localStorage.removeItem('role');
     localStorage.removeItem('username');
     navigate('/login');
+<<<<<<< HEAD
     window.location.reload(); // Optional: force refresh after logout
   };
 
@@ -57,6 +58,53 @@ export default function Navbar() {
     <>
       <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
       <Link to="/register" onClick={() => setMenuOpen(false)}>Register</Link>
+=======
+    window.location.reload(); // Ensures context resets completely
+  };
+
+  const isBuyer = user.isLoggedIn && user.role !== 'seller';
+  const isSeller = user.isLoggedIn && user.role === 'seller';
+
+  const renderLinks = (isMobile = false) => (
+    <>
+      <Link to="/products" onClick={() => isMobile && setMenuOpen(false)}>Products</Link>
+      <Link to="/about" onClick={() => isMobile && setMenuOpen(false)}>About Us</Link>
+      <Link to="/chat" onClick={() => isMobile && setMenuOpen(false)}>Chat</Link>
+
+      {isBuyer && (
+        <>
+          <Link to="/cart" onClick={() => isMobile && setMenuOpen(false)}>Cart</Link>
+          <Link to="/orders" onClick={() => isMobile && setMenuOpen(false)}>Orders</Link>
+          <Link to="/appointments" onClick={() => isMobile && setMenuOpen(false)}>Appointments</Link>
+        </>
+      )}
+
+      {isSeller && (
+        <>
+          <Link to="/seller" onClick={() => isMobile && setMenuOpen(false)}>Seller</Link>
+          <Link to="/seller/orders" onClick={() => isMobile && setMenuOpen(false)}>Seller Orders</Link>
+          <Link to="/seller/products" onClick={() => isMobile && setMenuOpen(false)}>Seller Products</Link>
+        </>
+      )}
+
+      {user.isLoggedIn ? (
+        <>
+          <Link to="/profile" onClick={() => isMobile && setMenuOpen(false)}>Profile</Link>
+          <Link to="/settings" onClick={() => isMobile && setMenuOpen(false)}>Settings</Link>
+          <button
+            onClick={() => { handleLogout(); isMobile && setMenuOpen(false); }}
+            className="bg-pink-500 px-2 py-1 rounded hover:bg-pink-600"
+          >
+            Logout
+          </button>
+        </>
+      ) : (
+        <>
+          <Link to="/login" onClick={() => isMobile && setMenuOpen(false)}>Login</Link>
+          <Link to="/register" onClick={() => isMobile && setMenuOpen(false)}>Register</Link>
+        </>
+      )}
+>>>>>>> 034843ba7a1e565c77e4e030981c5ddbf5640c76
     </>
   );
 
@@ -69,10 +117,14 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex space-x-3 items-center text-sm">
+<<<<<<< HEAD
           {renderCommonLinks()}
           {user.isLoggedIn && user.role !== 'seller' && renderBuyerLinks()}
           {user.isLoggedIn && user.role === 'seller' && renderSellerLinks()}
           {user.isLoggedIn ? renderAuthLinks() : renderGuestLinks()}
+=======
+          {renderLinks()}
+>>>>>>> 034843ba7a1e565c77e4e030981c5ddbf5640c76
         </div>
 
         <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-xl">☰</button>
@@ -80,10 +132,14 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className="md:hidden flex flex-col px-4 pb-3 space-y-2 bg-gradient-to-r from-[#003366] to-[#005EB8] text-sm">
+<<<<<<< HEAD
           {renderCommonLinks()}
           {user.isLoggedIn && user.role !== 'seller' && renderBuyerLinks()}
           {user.isLoggedIn && user.role === 'seller' && renderSellerLinks()}
           {user.isLoggedIn ? renderAuthLinks() : renderGuestLinks()}
+=======
+          {renderLinks(true)}
+>>>>>>> 034843ba7a1e565c77e4e030981c5ddbf5640c76
         </div>
       )}
     </nav>

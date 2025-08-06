@@ -1,88 +1,89 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { AuthContext } from '../context/AuthContext';
 
 export default function Login() {
-  const [data, setData] = useState({ username: '', password: '', role: 'buyer' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('buyer');
   const navigate = useNavigate();
-  const { setUser } = useContext(AuthContext);
 
-  const API_BASE = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/$/, '');
-
-  const handleChange = e =>
-    setData({ ...data, [e.target.name]: e.target.value });
-
-  const handleSubmit = async e => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const route = data.role === 'seller'
-        ? '/api/seller/login'
-        : '/api/user/login';
-
-      const loginUrl = `${API_BASE}${route}`;
-
-      const payload = data.role === 'seller'
-        ? { email: data.username, password: data.password }
-        : { username: data.username, password: data.password };
-
-      const res = await axios.post(loginUrl, payload);
-
-      localStorage.setItem('token', res.data.token);  // keep token for backend calls
-
-      setUser({
-        isLoggedIn: true,
-        role: data.role,
-        username: res.data.username || '',
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
+        email,
+        password,
+        role,
       });
 
-      toast.success('Logged in successfully!');
-      navigate('/dashboard');
-      window.location.reload();
+      const { token, user } = res.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', user.role);
+
+      toast.success('Login successful!');
+
+      if (user.role === 'seller') {
+        navigate('/seller/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
-      console.error(err.response?.data || err.message);
-      toast.error(err.response?.data?.message || 'Login failed');
+      toast.error('Invalid credentials or server error.');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white shadow p-6 rounded-xl">
-      <h2 className="text-xl font-semibold mb-4 text-[#003366]">Login</h2>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <input
-          type="text"
-          name="username"
-          value={data.username}
-          onChange={handleChange}
-          placeholder={data.role === 'seller' ? "Email" : "Username"}
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="password"
-          name="password"
-          value={data.password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
-        <select
-          name="role"
-          value={data.role}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        >
-          <option value="buyer">Login as Buyer</option>
-          <option value="seller">Login as Seller</option>
-        </select>
+    <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
+      <form onSubmit={handleLogin} className="space-y-4">
+        <div>
+          <label className="block mb-1">Login as:</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full border p-2 rounded"
+          >
+            <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+          </select>
+        </div>
+        <div>
+          <label className="block mb-1">Email</label>
+          <input
+            type="email"
+            required
+            className="w-full border p-2 rounded"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Password</label>
+          <input
+            type="password"
+            required
+            className="w-full border p-2 rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
         <button
           type="submit"
-          className="bg-gradient-to-r from-[#005EB8] to-[#003366] text-white px-3 py-2 rounded hover:opacity-90 w-full"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
           Login
         </button>
+
+        {/* ✅ Register link here */}
+        <p className="mt-4 text-center text-sm">
+          Don't have an account?{' '}
+          <a href="/register" className="text-blue-600 hover:underline">
+            Register here
+          </a>
+        </p>
       </form>
     </div>
   );

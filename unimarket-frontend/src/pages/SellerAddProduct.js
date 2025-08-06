@@ -1,68 +1,60 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import SellerNavbar from '../components/SellerNavbar';
 
 export default function SellerAddProduct() {
-  const [product, setProduct] = useState({ name: '', price: '', description: '', imageUrl: '' });
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
   const [message, setMessage] = useState('');
   const token = localStorage.getItem('token');
 
-  const handleChange = (e) =>
-    setProduct({ ...product, [e.target.name]: e.target.value });
-
-  const handleAdd = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/user/products/add', product, {
-        headers: { Authorization: `Bearer ${token}` }
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/seller/products`, {
+        name, price
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setMessage(res.data.message);
-      setProduct({ name: '', price: '', description: '', imageUrl: '' });
-    } catch {
-      setMessage('Failed to add product');
+      setMessage('✅ Product added successfully!');
+      setName('');
+      setPrice('');
+    } catch (err) {
+      setMessage('❌ Failed to add product.');
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-8">
-      <h1 className="text-2xl font-bold mb-4">➕ Add Product</h1>
-      {message && <p className="mb-2">{message}</p>}
-      <form onSubmit={handleAdd} className="space-y-2">
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={product.name}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-          required
-        />
-        <input
-          type="number"
-          name="price"
-          placeholder="Price (RM)"
-          value={product.price}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="description"
-          placeholder="Description"
-          value={product.description}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="text"
-          name="imageUrl"
-          placeholder="Image URL (optional)"
-          value={product.imageUrl}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Add</button>
-      </form>
-    </div>
+    <>
+      <SellerNavbar />
+      <div className="max-w-md mx-auto mt-8">
+        <h1 className="text-2xl font-bold mb-4">➕ Add New Product</h1>
+        {message && <p className="mb-4 text-sm">{message}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Product Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            type="number"
+            placeholder="Price (RM)"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Add Product
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
