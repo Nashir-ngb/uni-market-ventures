@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
   const [data, setData] = useState({
-    username: '',
     email: '',
     password: '',
     role: 'buyer',
@@ -31,9 +30,7 @@ export default function Register() {
 
       const registerUrl = `${API_BASE}${route}`;
 
-      // ✅ Always send username, email and password
       const payload = {
-        username: data.username,
         email: data.email,
         password: data.password
       };
@@ -64,15 +61,6 @@ export default function Register() {
           <option value="buyer">Register as Buyer</option>
           <option value="seller">Register as Seller</option>
         </select>
-        <input
-          type="text"
-          name="username"
-          value={data.username}
-          onChange={handleChange}
-          placeholder="Username"
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
         <input
           type="email"
           name="email"
