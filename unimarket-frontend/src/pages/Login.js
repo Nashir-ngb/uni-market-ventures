@@ -12,6 +12,7 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+<<<<<<< HEAD
       let url;
       if (role === "seller") {
         url = `${process.env.REACT_APP_API_BASE_URL}/api/seller/login`;
@@ -35,6 +36,28 @@ export default function Login() {
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
       toast.error("Invalid credentials or server error.");
+=======
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
+        email,
+        password,
+        role,
+      });
+
+      const { token, user } = res.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', user.role);
+
+      toast.success('Login successful!');
+
+      if (user.role === 'seller') {
+        navigate('/seller/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      toast.error('Invalid credentials or server error.');
+>>>>>>> b67ad41231197f46bbe2c23d5e0ecbe058c7ea7a
     }
   };
 
@@ -80,6 +103,10 @@ export default function Login() {
           Login
         </button>
 
+<<<<<<< HEAD
+=======
+        {/* ✅ Register link here */}
+>>>>>>> b67ad41231197f46bbe2c23d5e0ecbe058c7ea7a
         <p className="mt-4 text-center text-sm">
           Don't have an account?{' '}
           <a href="/register" className="text-blue-600 hover:underline">

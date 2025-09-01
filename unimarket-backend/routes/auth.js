@@ -1,3 +1,4 @@
+// routes/auth.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -12,6 +13,9 @@ router.post('/register', async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'Email already in use' });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -21,16 +25,20 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       role // should be 'buyer' or 'seller'
+      role
     });
 
     await newUser.save();
 
+
     // Create token
+    // Generate JWT
     const token = jwt.sign(
       { id: newUser._id, role: newUser.role },
       process.env.JWT_SECRET || 'secretkey',
       { expiresIn: '1d' }
     );
+
 
     res.status(201).json({
       token,
@@ -47,6 +55,16 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
+    res.status(201).json({ token, role: newUser.role });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// POST /api/auth/login (already exists)
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
@@ -65,6 +83,14 @@ router.post('/login', async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Server error during login' });
   }
+});
+
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.get('/test', (req, res) => {
+  res.send('✅ /api/auth route is working');
 });
 
 module.exports = router;

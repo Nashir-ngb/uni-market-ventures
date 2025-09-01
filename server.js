@@ -6,6 +6,7 @@ const OpenAI = require('openai');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+require('dotenv').config();
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 
 // ✅ Existing routes
 const sellerRoutes = require('./routes/seller');  // seller login & functions
+const sellerRoutes = require('./routes/seller');  // seller login & AI chat route
 const authRoutes = require('./routes/auth');      // buyer login
 const userRoutes = require('./routes/user');      // buyer register, dashboard, etc.
 app.use('/api/seller', sellerRoutes);
@@ -26,6 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
 // ✅ Simple health route
+// ✅ Simple health check route
 app.get('/', (req, res) => {
   res.send('✅ UniMarket backend is running!');
 });
@@ -56,7 +59,8 @@ app.post('/api/chat', async (req, res) => {
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/unimarket', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-})
+// ✅ Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/unimarket')
 .then(() => console.log('✅ MongoDB connected'))
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
