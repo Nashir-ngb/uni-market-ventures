@@ -1,10 +1,8 @@
 // server.js
 const express = require('express');
-const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
-
 
 const app = express();
 
@@ -20,6 +18,7 @@ app.use(express.json());
 const sellerRoutes = require('./routes/seller');  // seller login & AI chat route
 const authRoutes = require('./routes/auth');      // buyer login
 const userRoutes = require('./routes/user');      // buyer register, dashboard, etc.
+
 app.use('/api/seller', sellerRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
@@ -31,8 +30,8 @@ app.get('/', (req, res) => {
 
 // ✅ Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/unimarket')
-.then(() => console.log('✅ MongoDB connected'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
