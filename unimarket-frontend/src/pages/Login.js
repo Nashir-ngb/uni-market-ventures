@@ -10,34 +10,24 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const baseURL = (process.env.REACT_APP_API_BASE_URL || "").replace(/\/+$/, "");
-      let res;
 
-      // Try logging in as a buyer first
-      try {
-        console.log("Trying buyer login at:", `${baseURL}/api/user/login`);
-        res = await axios.post(`${baseURL}/api/user/login`, { email, password });
-      } catch (err) {
-        // If buyer login fails, try seller login
-        console.log("Buyer login failed, trying seller login at:", `${baseURL}/api/seller/login`);
-        res = await axios.post(`${baseURL}/api/seller/login`, { email, password });
-      }
+    try {
+      const url = `${process.env.REACT_APP_API_BASE_URL}/api/user/login`;
+      console.log("Logging in at:", url);
+
+      const res = await axios.post(url, { email, password });
+
+      // Save token & role
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.user.role);
 
       toast.success("Login successful!");
 
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-      }
-      if (res.data?.role) {
-        localStorage.setItem("role", res.data.role);
-      }
-
       // Redirect based on role
-      if (res.data.role === "seller") {
-        navigate("/seller-dashboard");
+      if (res.data.user.role === "seller") {
+        navigate("/seller/dashboard");
       } else {
-        navigate("/buyer-dashboard"); // you can also change this to "/" if you prefer
+        navigate("/dashboard");
       }
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
