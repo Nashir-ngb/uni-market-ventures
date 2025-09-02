@@ -30,6 +30,7 @@ import SellerWallet from './pages/SellerWallet';
 import SellerAddProduct from './pages/SellerAddProduct';
 
 import RequireSeller from './components/RequireSeller';
+import SellerLayout from "./layouts/SellerLayout";
 
 export default function App() {
   return (
@@ -61,6 +62,7 @@ export default function App() {
               <Route path="/seller/products" element={<RequireSeller><SellerProducts /></RequireSeller>} />
               <Route path="/seller/wallet" element={<RequireSeller><SellerWallet /></RequireSeller>} />
               <Route path="/seller/add-product" element={<RequireSeller><SellerAddProduct /></RequireSeller>} />
+              <Route path="/seller" element={<SellerLayout />} />
             </Routes>
           </main>
           <ToastContainer position="top-center" />
