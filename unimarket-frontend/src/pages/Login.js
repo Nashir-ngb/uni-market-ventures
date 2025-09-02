@@ -35,9 +35,9 @@ export default function Login() {
 
       // Redirect based on role
       if (res.data.role === "seller") {
-        navigate("/seller-dashboard");
+        navigate("/seller/dashboard");
       } else {
-        navigate("/buyer-dashboard"); // you can also change this to "/" if you prefer
+        navigate("/dashboard"); // you can also change this to "/" if you prefer
       }
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
