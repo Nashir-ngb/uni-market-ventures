@@ -1,82 +1,85 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("buyer"); // default role
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('buyer');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  // Strip any trailing slash from API base URL
+  const baseURL = (process.env.REACT_APP_API_BASE_URL || "").replace(/\/+$/, "");
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
       let url;
       if (role === "seller") {
-        url = `${process.env.REACT_APP_API_BASE_URL}/api/seller/login`;
+        url = `${baseURL}/api/seller/login`;
       } else {
-        url = `${process.env.REACT_APP_API_BASE_URL}/api/user/login`; // ✅ fixed
+        url = `${baseURL}/api/user/login`;
       }
+
+      console.log("Logging in at:", url); // Debug log
 
       const res = await axios.post(url, { email, password });
 
-      if (res.data.token) { // ✅ check for token instead of res.data.success
+      toast.success("Login successful!");
+      // Save token if backend returns one
+      if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role", role);
-
-        if (role === "seller") {
-          navigate("/seller/dashboard");
-        } else {
-          navigate("/buyer/dashboard");
-        }
-      } else {
-        alert("Invalid credentials");
       }
+      navigate("/");
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
-      alert("Something went wrong. Please try again.");
+      toast.error(err.response?.data?.message || "Login failed. Please try again.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full p-3 border rounded-lg"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full p-3 border rounded-lg"
-          />
+    <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
+      <form onSubmit={handleLogin} className="space-y-4">
+        <div>
+          <label className="block mb-1">Login as:</label>
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full p-3 border rounded-lg"
+            className="w-full border p-2 rounded"
           >
             <option value="buyer">Buyer</option>
             <option value="seller">Seller</option>
           </select>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
-          >
-            Login
-          </button>
-        </form>
-      </div>
+        </div>
+        <div>
+          <label className="block mb-1">Email</label>
+          <input
+            type="email"
+            required
+            className="w-full border p-2 rounded"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Password</label>
+          <input
+            type="password"
+            required
+            className="w-full border p-2 rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
+          Login
+        </button>
+      </form>
     </div>
   );
 }
-
-export default Login;
