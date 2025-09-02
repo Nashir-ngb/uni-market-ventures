@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function Login() {
@@ -8,17 +8,21 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // Remove trailing slash if it exists
-  const baseURL = (process.env.REACT_APP_API_BASE_URL || "").replace(/\/+$/, "");
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const url = `${baseURL}/api/user/login`;
+      const baseURL = (process.env.REACT_APP_API_BASE_URL || "").replace(/\/+$/, "");
+      let res;
 
-      console.log("Logging in at:", url);
-
-      const res = await axios.post(url, { email, password });
+      // Try logging in as a buyer first
+      try {
+        console.log("Trying buyer login at:", `${baseURL}/api/user/login`);
+        res = await axios.post(`${baseURL}/api/user/login`, { email, password });
+      } catch (err) {
+        // If buyer login fails, try seller login
+        console.log("Buyer login failed, trying seller login at:", `${baseURL}/api/seller/login`);
+        res = await axios.post(`${baseURL}/api/seller/login`, { email, password });
+      }
 
       toast.success("Login successful!");
 
@@ -33,7 +37,7 @@ export default function Login() {
       if (res.data.role === "seller") {
         navigate("/seller-dashboard");
       } else {
-        navigate("/buyer-dashboard"); // or "/" if you don’t have buyer dashboard
+        navigate("/buyer-dashboard"); // you can also change this to "/" if you prefer
       }
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
@@ -67,17 +71,16 @@ export default function Login() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
         >
           Login
         </button>
 
-        {/* Register link */}
         <p className="mt-4 text-center text-sm">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-600 hover:underline">
+          <a href="/register" className="text-blue-600 hover:underline">
             Register here
-          </Link>
+          </a>
         </p>
       </form>
     </div>
