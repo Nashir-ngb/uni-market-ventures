@@ -1,40 +1,43 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('buyer');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // Strip any trailing slash from API base URL
+  // Remove trailing slash if it exists
   const baseURL = (process.env.REACT_APP_API_BASE_URL || "").replace(/\/+$/, "");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      let url;
-      if (role === "seller") {
-        url = `${baseURL}/api/seller/login`;
-      } else {
-        url = `${baseURL}/api/user/login`;
-      }
+      const url = `${baseURL}/api/user/login`;
 
-      console.log("Logging in at:", url); // Debug log
+      console.log("Logging in at:", url);
 
       const res = await axios.post(url, { email, password });
 
       toast.success("Login successful!");
-      // Save token if backend returns one
+
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
       }
-      navigate("/");
+      if (res.data?.role) {
+        localStorage.setItem("role", res.data.role);
+      }
+
+      // Redirect based on role
+      if (res.data.role === "seller") {
+        navigate("/seller-dashboard");
+      } else {
+        navigate("/buyer-dashboard"); // or "/" if you don’t have buyer dashboard
+      }
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
-      toast.error(err.response?.data?.message || "Login failed. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
@@ -42,17 +45,6 @@ export default function Login() {
     <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
       <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
       <form onSubmit={handleLogin} className="space-y-4">
-        <div>
-          <label className="block mb-1">Login as:</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full border p-2 rounded"
-          >
-            <option value="buyer">Buyer</option>
-            <option value="seller">Seller</option>
-          </select>
-        </div>
         <div>
           <label className="block mb-1">Email</label>
           <input
@@ -79,6 +71,14 @@ export default function Login() {
         >
           Login
         </button>
+
+        {/* Register link */}
+        <p className="mt-4 text-center text-sm">
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Register here
+          </Link>
+        </p>
       </form>
     </div>
   );

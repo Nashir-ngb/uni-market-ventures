@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export default function Register() {
@@ -22,9 +22,9 @@ export default function Register() {
         url = `${baseURL}/api/user/register`;
       }
 
-      console.log("Registering at:", url); // Debug log
+      console.log("Registering at:", url);
 
-      await axios.post(url, { email, password });
+      await axios.post(url, { email, password, role });
 
       toast.success("Registration successful! You can now login.");
       navigate("/login");
@@ -76,11 +76,12 @@ export default function Register() {
           Register
         </button>
 
+        {/* Login link using React Router */}
         <p className="mt-4 text-center text-sm">
-          Already have an account?{' '}
-          <a href="/login" className="text-blue-600 hover:underline">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
             Login here
-          </a>
+          </Link>
         </p>
       </form>
     </div>
