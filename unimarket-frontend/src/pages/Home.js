@@ -190,39 +190,50 @@ export default function Home() {
       {/* Modal */}
       {selected && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full relative">
+          <div className="bg-white rounded-xl shadow-lg max-w-md w-full relative flex flex-col max-h-[90vh]">
+            {/* Close button */}
             <button
               onClick={() => setSelected(null)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
             >
               ✕
             </button>
-            <img
-              src={selected.poster}
-              alt={selected.name}
-              className="w-full max-h-72 object-contain rounded-lg mb-4"
-            />
-            <h2 className="text-2xl font-bold text-[#003366] mb-2">
-              {selected.name}
-            </h2>
-            <p className="text-gray-700 mb-4">{selected.description}</p>
-            <div className="flex gap-4 mb-4">
-              <a href={`tel:${selected.contact.phone}`} target="_blank" rel="noreferrer">
-                <Phone className="text-blue-600 w-6 h-6" />
-              </a>
-              <a href={selected.contact.whatsapp} target="_blank" rel="noreferrer">
-                <MessageCircle className="text-green-500 w-6 h-6" />
-              </a>
-              <a href={selected.contact.instagram} target="_blank" rel="noreferrer">
-                <Instagram className="text-pink-500 w-6 h-6" />
-              </a>
+
+            {/* Scrollable content */}
+            <div className="p-6 overflow-y-auto flex-1">
+              <img
+                src={selected.poster}
+                alt={selected.name}
+                className="w-full max-h-80 object-contain rounded-lg mb-4"
+              />
+              <h2 className="text-2xl font-bold text-[#003366] mb-2">
+                {selected.name}
+              </h2>
+              <p className="text-gray-700 mb-4">{selected.description}</p>
+              <div className="flex gap-4 mb-20">
+                <a href={`tel:${selected.contact.phone}`} target="_blank" rel="noreferrer">
+                  <Phone className="text-blue-600 w-6 h-6" />
+                </a>
+                <a href={selected.contact.whatsapp} target="_blank" rel="noreferrer">
+                  <MessageCircle className="text-green-500 w-6 h-6" />
+                </a>
+                <a href={selected.contact.instagram} target="_blank" rel="noreferrer">
+                  <Instagram className="text-pink-500 w-6 h-6" />
+                </a>
+              </div>
             </div>
-            <button
-              onClick={() => handleAppointmentBooking(selected.name, "seller")}
-              className="bg-[#005EB8] text-white px-4 py-2 rounded shadow hover:bg-[#003366] w-full"
-            >
-              Book with Seller
-            </button>
+
+            {/* Fixed button with blur/gradient */}
+            <div className="absolute bottom-0 left-0 right-0">
+              <div className="backdrop-blur-md bg-gradient-to-t from-white/90 to-white/40 p-4 rounded-b-xl">
+                <button
+                  onClick={() => handleAppointmentBooking(selected.name, "seller")}
+                  className="bg-[#005EB8] text-white px-4 py-2 rounded shadow hover:bg-[#003366] w-full"
+                >
+                  Book with Seller
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
