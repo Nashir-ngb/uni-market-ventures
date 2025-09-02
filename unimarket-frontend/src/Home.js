@@ -200,7 +200,7 @@ export default function Home() {
             <img
               src={selected.poster}
               alt={selected.name}
-              className="w-full h-[600px] object-cover rounded-lg mb-4"
+              className="w-full max-h-72 object-contain rounded-lg mb-4"
             />
             <h2 className="text-2xl font-bold text-[#003366] mb-2">
               {selected.name}
