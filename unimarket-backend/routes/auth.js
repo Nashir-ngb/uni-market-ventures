@@ -1,96 +1,64 @@
-// routes/auth.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// POST /api/auth/register
-router.post('/register', async (req, res) => {
-  const { email, password, role } = req.body;
-
+// ✅ REGISTER
+router.post("/register", async (req, res) => {
   try {
-    // Check if user already exists
+    const { username, email, password, role } = req.body;
+
+    // check if user exists
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'Email already in use' });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash password
+    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
+    // create new user
     const newUser = new User({
+      username,
       email,
       password: hashedPassword,
-      role // should be 'buyer' or 'seller'
-      role
+      role, // buyer, seller, admin, etc.
     });
 
     await newUser.save();
-
-
-    // Create token
-    // Generate JWT
-    const token = jwt.sign(
-      { id: newUser._id, role: newUser.role },
-      process.env.JWT_SECRET || 'secretkey',
-      { expiresIn: '1d' }
-    );
-
-
-    res.status(201).json({
-      token,
-      role: newUser.role,
-      message: 'User registered successfully'
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error during registration' });
+    res.status(201).json({ message: "✅ User registered successfully" });
+  } catch (error) {
+    console.error("❌ Register error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// POST /api/auth/login
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-    res.status(201).json({ token, role: newUser.role });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// POST /api/auth/login (already exists)
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+// ✅ LOGIN
+router.post("/login", async (req, res) => {
   try {
+    const { email, password } = req.body;
+
+    // find user
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
+    // check password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
+    // create JWT
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET || 'secretkey',
-      { expiresIn: '1d' }
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
     );
 
-    res.json({ token, role: user.role });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error during login' });
+    res.json({ token, role: user.role, username: user.username });
+  } catch (error) {
+    console.error("❌ Login error:", error);
+    res.status(500).json({ message: "Server error" });
   }
-});
-
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-router.get('/test', (req, res) => {
-  res.send('✅ /api/auth route is working');
 });
 
 module.exports = router;
