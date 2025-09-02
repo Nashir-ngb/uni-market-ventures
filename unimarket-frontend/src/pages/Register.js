@@ -29,6 +29,7 @@ export default function Register() {
       toast.success("Registration successful! You can now login.");
       navigate("/login");
     } catch (err) {
+      console.error("Registration error details:", err.response || err);
       console.error("Registration error:", err.response?.data || err.message);
       toast.error("Registration failed. Try again.");
     }
