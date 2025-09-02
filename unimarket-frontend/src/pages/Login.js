@@ -15,12 +15,12 @@ function Login() {
       if (role === "seller") {
         url = `${process.env.REACT_APP_API_BASE_URL}/api/seller/login`;
       } else {
-        url = `${process.env.REACT_APP_API_BASE_URL}/api/buyer/login`;
+        url = `${process.env.REACT_APP_API_BASE_URL}/api/user/login`; // ✅ fixed
       }
 
       const res = await axios.post(url, { email, password });
 
-      if (res.data.success) {
+      if (res.data.token) { // ✅ check for token instead of res.data.success
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", role);
 
@@ -33,7 +33,7 @@ function Login() {
         alert("Invalid credentials");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err.response?.data || err.message);
       alert("Something went wrong. Please try again.");
     }
   };
