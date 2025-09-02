@@ -119,7 +119,7 @@ export default function Home() {
           key={currentSlide}
           src={businesses[currentSlide].poster}
           alt={businesses[currentSlide].name}
-          className="w-full h-64 object-cover rounded-xl shadow-xl cursor-pointer"
+          className="w-full h-[600px] object-cover rounded-xl shadow-xl cursor-pointer"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -200,7 +200,7 @@ export default function Home() {
             <img
               src={selected.poster}
               alt={selected.name}
-              className="w-full h-48 object-cover rounded-lg mb-4"
+              className="w-full h-[600px] object-cover rounded-lg mb-4"
             />
             <h2 className="text-2xl font-bold text-[#003366] mb-2">
               {selected.name}
