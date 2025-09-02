@@ -3,6 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
+
+
 export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
