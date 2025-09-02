@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export default function Register() {
-  const [username, setUsername] = useState(''); // ✅ added
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('buyer');
@@ -14,14 +13,12 @@ export default function Register() {
     e.preventDefault();
     try {
       let url;
-      let payload;
+      let payload = { email, password }; // ✅ only email & password
 
       if (role === "seller") {
         url = `${process.env.REACT_APP_API_BASE_URL}/api/seller/register`;
-        payload = { username, email, password }; // ✅ seller can also store username
       } else {
         url = `${process.env.REACT_APP_API_BASE_URL}/api/user/register`;
-        payload = { username, email, password }; // ✅ buyer requires username
       }
 
       const res = await axios.post(url, payload);
@@ -52,18 +49,6 @@ export default function Register() {
             <option value="buyer">Buyer</option>
             <option value="seller">Seller</option>
           </select>
-        </div>
-
-        {/* ✅ Only show username if role is buyer or seller */}
-        <div>
-          <label className="block mb-1">Username</label>
-          <input
-            type="text"
-            required
-            className="w-full border p-2 rounded"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
         </div>
 
         <div>
