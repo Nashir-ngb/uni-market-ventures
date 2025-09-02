@@ -3,38 +3,34 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
-
-
 export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('buyer');
   const navigate = useNavigate();
 
+  // Strip any trailing slash from API base URL
+  const baseURL = (process.env.REACT_APP_API_BASE_URL || "").replace(/\/+$/, "");
+
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
       let url;
-      let payload = { email, password }; // ✅ only email & password
-
       if (role === "seller") {
-        url = `${process.env.REACT_APP_API_BASE_URL}/api/seller/register`;
+        url = `${baseURL}/api/seller/register`;
       } else {
-        url = `${process.env.REACT_APP_API_BASE_URL}/api/user/register`;
+        url = `${baseURL}/api/user/register`;
       }
 
-      const res = await axios.post(url, payload);
+      console.log("Registering at:", url); // Debug log
 
-      if (res.data.token) {
-        toast.success("Registration successful! You can now login.");
-        navigate("/login");
-      } else {
-        toast.error(res.data.message || "Registration failed.");
-      }
+      await axios.post(url, { email, password });
+
+      toast.success("Registration successful! You can now login.");
+      navigate("/login");
     } catch (err) {
       console.error("Registration error:", err.response?.data || err.message);
-      toast.error(err.response?.data?.message || "Registration failed. Try again.");
+      toast.error("Registration failed. Try again.");
     }
   };
 
@@ -53,7 +49,6 @@ export default function Register() {
             <option value="seller">Seller</option>
           </select>
         </div>
-
         <div>
           <label className="block mb-1">Email</label>
           <input
@@ -64,7 +59,6 @@ export default function Register() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-
         <div>
           <label className="block mb-1">Password</label>
           <input
@@ -75,7 +69,6 @@ export default function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-
         <button
           type="submit"
           className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
